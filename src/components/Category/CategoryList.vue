@@ -1,9 +1,9 @@
 <template>
   <div>
     <category-list-item
-      v-for="(category, index) in categories"
+      v-for="category in categories"
       :category="category"
-      :key="`category_${category['.key']}_${index}`"
+      :key="`category_${category['.key']}`"
     />
   </div>
 </template>
