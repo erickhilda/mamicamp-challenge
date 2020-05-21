@@ -18,7 +18,7 @@
         <!--<a href="index.html">Home</a>-->
         <!--</li>-->
         <li class="navbar-user">
-          <a href="#">
+          <router-link :to="{ name: 'Profile' }" class="logo">
             <img class="avatar-small" :src="user.avatar" alt="avatar-img" />
             <span>
               {{ user.name }}
@@ -28,7 +28,7 @@
                 alt=""
               />
             </span>
-          </a>
+          </router-link>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
