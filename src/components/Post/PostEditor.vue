@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     save() {
-      const postId = "greatPost" + Math.random();
+      const postId = "somethingPost" + Math.random();
       const post = {
         text: this.text,
         publishedAt: Math.floor(Date.now() / 1000),
