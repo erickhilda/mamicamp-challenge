@@ -1,6 +1,10 @@
 <template>
   <div class="post-list">
-    <post-list-item v-for="post in posts" :post="post" :key="post['.key']" />
+    <post-list-item
+      v-for="post in posts"
+      :post="post"
+      :key="`post_${post['.key']}`"
+    />
   </div>
 </template>
 

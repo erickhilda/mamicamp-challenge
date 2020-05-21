@@ -1,8 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "@/views/Home.vue";
-import ThreadShow from "@/views/ThreadShow";
-import NotFound from "@/views/NotFound";
+import PageHome from "@/views/PageHome.vue";
+import PageThreadShow from "@/views/PageThreadShow";
+import PageNotFound from "@/views/PageNotFound";
+import PageForum from "@/views/PageForum";
+import PageCategory from "@/views/PageCategory";
+import PageProfile from "@/views/PageProfile";
 
 Vue.use(VueRouter);
 
@@ -10,18 +13,36 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: PageHome
+  },
+  {
+    path: "/forum/:id",
+    name: "Forum",
+    props: true,
+    component: PageForum
+  },
+  {
+    path: "/user",
+    name: "Profile",
+    props: true,
+    component: PageProfile
+  },
+  {
+    path: "/category/:id",
+    name: "Category",
+    props: true,
+    component: PageCategory
   },
   {
     path: "/thread/:id",
     name: "ThreadShow",
     props: true,
-    component: ThreadShow
+    component: PageThreadShow
   },
   {
     path: "*",
     name: "NotFound",
-    component: NotFound
+    component: PageNotFound
   }
 ];
 
