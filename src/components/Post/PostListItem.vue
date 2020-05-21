@@ -16,25 +16,24 @@
       </div>
     </div>
 
-    <div class="post-date text-faded" :title="post.publishedAt | dateFormat">
-      {{ post.publishedAt | postAge }}
+    <div class="post-date text-faded">
+      <app-date :timestamp="post.publishedAt" />
     </div>
   </div>
 </template>
 
 <script>
 import sourceData from "@/data";
-import dateFormat from "@/mixins/dateFormat";
-import postAge from "@/mixins/postAge";
+import AppDate from "@/components/AppDate";
 
 export default {
+  components: { AppDate },
   props: {
     post: {
       required: true,
       type: Object
     }
   },
-  mixins: [dateFormat, postAge],
   computed: {
     user() {
       return sourceData.users[this.post.userId];

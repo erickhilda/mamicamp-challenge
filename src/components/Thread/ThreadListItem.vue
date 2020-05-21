@@ -9,8 +9,8 @@
         </router-link>
       </p>
       <p class="text-faded text-xsmall">
-        By <a href="#">{{ user.name }}</a
-        >, {{ thread.publishedAt | postAge }}.
+        By <a href="#">{{ user.name }},</a>
+        <app-date :timestamp="thread.publishedAt" />
       </p>
     </div>
 
@@ -22,7 +22,7 @@
 
 <script>
 import sourceData from "@/data";
-import postAge from "@/mixins/postAge";
+import AppDate from "@/components/AppDate";
 
 export default {
   props: {
@@ -31,7 +31,7 @@ export default {
       type: Object
     }
   },
-  mixins: [postAge],
+  components: { AppDate },
   computed: {
     repliesCount() {
       return Object.keys(this.thread.posts).length - 1;
