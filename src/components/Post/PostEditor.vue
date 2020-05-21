@@ -39,7 +39,7 @@ export default {
         ".key": postId
       };
       this.newPost = "";
-      this.$emit("save", { post });
+      this.$store.dispatch("createPost", post);
     }
   }
 };

@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import sourceData from "@/data";
 import ThreadList from "@/components/Thread/ThreadList";
 
 export default {
@@ -32,10 +31,10 @@ export default {
   },
   computed: {
     forum() {
-      return sourceData.forums[this.id];
+      return this.$store.state.forums[this.id];
     },
     threads() {
-      return Object.values(sourceData.threads).filter(
+      return Object.values(this.$store.state.threads).filter(
         thread => thread.forumId === this.id
       );
     }
