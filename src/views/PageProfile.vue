@@ -57,6 +57,7 @@
 <script>
 import { mapGetters } from "vuex";
 import PostList from "@/components/Post/PostList";
+import { objectPropertiesCounter } from "@/helpers/objectPropertiesCounter";
 
 export default {
   components: { PostList },
@@ -65,10 +66,10 @@ export default {
       user: "authenticatedUser"
     }),
     userThreadsCount() {
-      return this.user.threads ? Object.keys(this.user.threads).length : 0;
+      return objectPropertiesCounter(this.user.threads);
     },
     userPostsCount() {
-      return this.user.posts ? Object.keys(this.user.posts).length : 0;
+      return objectPropertiesCounter(this.user.posts);
     },
     userPosts() {
       if (this.user.posts) {
