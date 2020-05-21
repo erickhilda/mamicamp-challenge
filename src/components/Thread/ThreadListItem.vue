@@ -10,7 +10,7 @@
       </p>
       <p class="text-faded text-xsmall">
         By <a href="#">{{ user.name }}</a
-        >, {{ thread.publishedAt }}.
+        >, {{ thread.publishedAt | postAge }}.
       </p>
     </div>
 
@@ -22,6 +22,7 @@
 
 <script>
 import sourceData from "@/data";
+import postAge from "@/mixins/postAge";
 
 export default {
   props: {
@@ -30,6 +31,7 @@ export default {
       type: Object
     }
   },
+  mixins: [postAge],
   computed: {
     repliesCount() {
       return Object.keys(this.thread.posts).length - 1;
