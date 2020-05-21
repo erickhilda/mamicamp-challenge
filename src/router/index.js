@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "@/views/Home.vue";
-import ThreadShow from "@/components/ThreadShow";
+import ThreadShow from "@/components/Thread/ThreadShow";
 
 Vue.use(VueRouter);
 
