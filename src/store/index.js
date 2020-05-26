@@ -10,27 +10,27 @@ export default new Vuex.Store({
     authId: "7uVPJS9GHoftN58Z2MXCYDqmNAh2"
   },
   mutations: {
-    setPost(state, { postId, post }) {
+    setPost(state, { post, postId }) {
       Vue.set(state.posts, postId, post);
     },
-    appendPostToThread(state, { threadId, postId }) {
+    appendPostToThread(state, { postId, threadId }) {
       const thread = state.threads[threadId];
-      if (!thread.post) {
+      if (!thread.posts) {
         Vue.set(thread, "posts", {});
       }
       Vue.set(thread.posts, postId, postId);
     },
-    appendPostToUser(state, { userId, postId }) {
+    appendPostToUser(state, { postId, userId }) {
       const user = state.users[userId];
-      if (!user.post) {
+      if (!user.posts) {
         Vue.set(user, "posts", {});
       }
       Vue.set(user.posts, postId, postId);
     },
-    setUser(state, { userId, user }) {
+    setUser(state, { user, userId }) {
       Vue.set(state.users, userId, user);
     },
-    setThread(state, { threadId, thread }) {
+    setThread(state, { thread, threadId }) {
       Vue.set(state.threads, threadId, thread);
     },
     appendThreadToForum(state, { forumId, threadId }) {
@@ -40,7 +40,6 @@ export default new Vuex.Store({
       }
       Vue.set(forum.threads, threadId, threadId);
     },
-
     appendThreadToUser(state, { userId, threadId }) {
       const user = state.users[userId];
       if (!user.threads) {
@@ -64,7 +63,6 @@ export default new Vuex.Store({
       commit("setPost", { post, postId });
       commit("appendPostToThread", { threadId: post.threadId, postId });
       commit("appendPostToUser", { userId: post.userId, postId });
-
       return Promise.resolve(state.posts[postId]);
     },
     updateUser({ commit }, user) {
@@ -73,9 +71,7 @@ export default new Vuex.Store({
     updateThread({ state, commit, dispatch }, { title, text, id }) {
       return new Promise(resolve => {
         const thread = state.threads[id];
-
         const newThread = { ...thread, title };
-
         commit("setThread", { thread: newThread, threadId: id });
 
         dispatch("updatePost", { id: thread.firstPostId, text }).then(() => {
@@ -124,7 +120,6 @@ export default new Vuex.Store({
             thread: { ...thread, firstPostId: post[".key"] }
           });
         });
-
         resolve(state.threads[threadId]);
       });
     }
