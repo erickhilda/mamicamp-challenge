@@ -1,17 +1,7 @@
 <template>
   <div class="flex-grid">
-    <profile-card
-      v-if="!edit"
-      :user="user"
-      :userPostsCount="userPostsCount"
-      :userThreadsCount="userThreadsCount"
-    />
-    <profile-card-editor
-      v-else
-      :user="user"
-      :userPostsCount="userPostsCount"
-      :userThreadsCount="userThreadsCount"
-    />
+    <profile-card v-if="!edit" :user="user" />
+    <profile-card-editor v-else :user="user" />
     <div class="col-7 push-top">
       <div class="profile-header">
         <span class="text-lead"> {{ user.name }} recent activity </span>
@@ -28,7 +18,6 @@ import { mapGetters } from "vuex";
 import PostList from "@/components/Post/PostList";
 import ProfileCard from "@/components/Profile/ProfileCard";
 import ProfileCardEditor from "@/components/Profile/ProfileCardEditor";
-import { objectPropertiesCounter } from "@/helpers/objectPropertiesCounter";
 
 export default {
   components: {
@@ -46,12 +35,6 @@ export default {
     ...mapGetters({
       user: "authenticatedUser"
     }),
-    userThreadsCount() {
-      return objectPropertiesCounter(this.user.threads);
-    },
-    userPostsCount() {
-      return objectPropertiesCounter(this.user.posts);
-    },
     userPosts() {
       if (this.user.posts) {
         return Object.values(this.$store.state.posts).filter(

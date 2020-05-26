@@ -67,7 +67,6 @@ export default {
     },
     persist() {
       const perists = this.isUpdate ? this.update() : this.create();
-      console.log(perists);
       return perists;
     }
   }
