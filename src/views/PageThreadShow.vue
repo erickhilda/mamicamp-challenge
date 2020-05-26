@@ -13,7 +13,7 @@
     </h1>
 
     <p>
-      By <a href="#" class="link-unstyled">Robin</a>,
+      By <a href="#" class="link-unstyled">{{ user.name }},</a>
       <app-date :timestamp="thread.publishedAt" />.
       <span
         style="float:right; margin-top: 2px;"
@@ -46,6 +46,9 @@ export default {
       return Object.values(this.$store.state.posts).filter(post =>
         postIds.includes(post[".key"])
       );
+    },
+    user() {
+      return this.$store.state.users[this.thread.userId];
     },
     thread() {
       return this.$store.state.threads[this.id];
