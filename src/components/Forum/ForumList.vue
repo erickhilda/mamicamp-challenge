@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ForumListItem
+    <forum-list-item
       v-for="forum in forums"
       :forum="forum"
       :key="`forum_${forum['.key']}`"
