@@ -56,7 +56,7 @@ export default new Vuex.Store({
   },
   actions: {
     createPost({ commit, state }, post) {
-      const postId = "post" + Math.random();
+      const postId = "greatPost" + Math.random();
       post[".key"] = postId;
       post.userId = state.authId;
       post.publishedAt = Math.floor(Date.now() / 1000);
@@ -70,18 +70,34 @@ export default new Vuex.Store({
     updateUser({ commit }, user) {
       commit("setUser", { userId: user[".key"], user });
     },
-    updateThread({ state, commit }, { title, text, id }) {
+    updateThread({ state, commit, dispatch }, { title, text, id }) {
       return new Promise(resolve => {
         const thread = state.threads[id];
-        const post = state.posts[thread.firstPostId];
 
         const newThread = { ...thread, title };
-        const newPost = { ...post, text };
 
         commit("setThread", { thread: newThread, threadId: id });
-        commit("setPost", { post: newPost, postId: thread.firstPostId });
 
-        resolve(newThread);
+        dispatch("updatePost", { id: thread.firstPostId, text }).then(() => {
+          resolve(newThread);
+        });
+      });
+    },
+    updatePost({ state, commit }, { id, text }) {
+      return new Promise(resolve => {
+        const post = state.posts[id];
+        commit("setPost", {
+          postId: id,
+          post: {
+            ...post,
+            text,
+            edited: {
+              at: Math.floor(Date.now() / 1000),
+              by: state.authId
+            }
+          }
+        });
+        resolve(post);
       });
     },
     createThread({ commit, state, dispatch }, { text, title, forumId }) {

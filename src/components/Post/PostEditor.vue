@@ -7,11 +7,16 @@
         cols="30"
         rows="10"
         class="form-input"
-        v-model="newPost"
+        v-model="text"
       />
     </div>
     <div class="form-actions">
-      <button class="btn-blue">Submit post</button>
+      <button v-if="isUpdate" @click.prevent="cancel" class="btn btn-ghost">
+        Cancel
+      </button>
+      <button class="btn-blue">
+        {{ isUpdate ? "Update" : "Submit post" }}
+      </button>
     </div>
   </form>
 </template>
@@ -20,22 +25,50 @@
 export default {
   props: {
     threadId: {
-      required: true
+      required: false
+    },
+    post: {
+      type: Object
     }
   },
   data() {
     return {
-      newPost: ""
+      text: this.post ? this.post.text : ""
     };
+  },
+  computed: {
+    isUpdate() {
+      return !!this.post;
+    }
   },
   methods: {
     save() {
+      this.persist().then(post => {
+        this.$emit("save", { post });
+      });
+    },
+    cancel() {
+      this.$emit("cancel");
+    },
+    create() {
       const post = {
-        text: this.newPost,
+        text: this.text,
         threadId: this.threadId
       };
-      this.newPost = "";
-      this.$store.dispatch("createPost", post);
+      this.text = "";
+      return this.$store.dispatch("createPost", post);
+    },
+    update() {
+      const payload = {
+        id: this.post[".key"],
+        text: this.text
+      };
+      return this.$store.dispatch("updatePost", payload);
+    },
+    persist() {
+      const perists = this.isUpdate ? this.update() : this.create();
+      console.log(perists);
+      return perists;
     }
   }
 };

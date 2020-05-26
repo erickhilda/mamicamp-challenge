@@ -19,7 +19,7 @@
     </div>
 
     <div class="col-full push-top">
-      <ThreadList :threads="threads" />
+      <thread-list :threads="threads" />
     </div>
   </div>
 </template>

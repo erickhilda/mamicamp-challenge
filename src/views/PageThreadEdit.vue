@@ -4,7 +4,7 @@
       Editing <i>{{ thread.title }}</i>
     </h1>
 
-    <ThreadEditor
+    <thread-editor
       :title="thread.title"
       :text="text"
       @save="save"
