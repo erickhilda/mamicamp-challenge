@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import sourceData from "@/data";
+import firebase from "firebase";
 import { objectPropertiesCounter } from "@/helpers/objectPropertiesCounter";
 
 Vue.use(Vuex);
@@ -18,7 +18,11 @@ const makeAppendChildToParentMutation = ({ parent, child }) => (
 
 export default new Vuex.Store({
   state: {
-    ...sourceData,
+    categories: {},
+    forums: {},
+    threads: {},
+    posts: {},
+    users: {},
     authId: "7uVPJS9GHoftN58Z2MXCYDqmNAh2"
   },
   mutations: {
@@ -46,7 +50,11 @@ export default new Vuex.Store({
     appendThreadToUser: makeAppendChildToParentMutation({
       parent: "users",
       child: "threads"
-    })
+    }),
+    setItem(state, { item, id, resource }) {
+      item[".key"] = id;
+      Vue.set(state[resource], id, item);
+    }
   },
   getters: {
     authenticatedUser(state) {
@@ -60,6 +68,32 @@ export default new Vuex.Store({
       objectPropertiesCounter(state.threads[id].posts) - 1
   },
   actions: {
+    fetchItem({ state, commit }, { id, emoji, resource }) {
+      console.log("🔥‍", emoji, id);
+      return new Promise(resolve => {
+        firebase
+          .database()
+          .ref(resource)
+          .child(id)
+          .once("value", snapshot => {
+            commit("setItem", {
+              resource,
+              id: snapshot.key,
+              item: snapshot.val()
+            });
+            resolve(state[resource][id]);
+          });
+      });
+    },
+    fetchThread({ dispatch }, { id }) {
+      return dispatch("fetchItem", { resource: "threads", id, emoji: "📄" });
+    },
+    fetchUser({ dispatch }, { id }) {
+      return dispatch("fetchItem", { resource: "users", id, emoji: "🙋" });
+    },
+    fetchPost({ dispatch }, { id }) {
+      return dispatch("fetchItem", { resource: "posts", id, emoji: "💬" });
+    },
     createPost({ commit, state }, post) {
       const postId = "greatPost" + Math.random();
       post[".key"] = postId;

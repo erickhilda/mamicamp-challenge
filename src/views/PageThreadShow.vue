@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full">
+  <div v-if="thread && user" class="col-full push-top">
     <h1>
       {{ thread.title }}
 
@@ -64,6 +64,19 @@ export default {
       return userIds.filter((item, index) => index === userIds.indexOf(item))
         .length;
     }
+  },
+  created() {
+    this.$store.dispatch("fetchThread", { id: this.id }).then(thread => {
+      // fetch user
+      this.$store.dispatch("fetchUser", { id: thread.userId });
+      Object.keys(thread.posts).forEach(postId => {
+        // fetch post
+        this.$store.dispatch("fetchPost", { id: postId }).then(post => {
+          // fetch user
+          this.$store.dispatch("fetchUser", { id: post.userId });
+        });
+      });
+    });
   }
 };
 </script>
