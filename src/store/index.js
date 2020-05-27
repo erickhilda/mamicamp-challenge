@@ -85,12 +85,17 @@ export default new Vuex.Store({
       });
     },
     fetchItems({ dispatch }, { ids, resource }) {
+      ids = Array.isArray(ids) ? ids : Object.keys(ids);
       return Promise.all(
         ids.map(id => dispatch("fetchItem", { id, resource }))
       );
     },
-    fetchPosts({ dispatch }, { ids }) {
-      return dispatch("fetchItems", { resource: "posts", ids });
+    fetchCategory({ dispatch }, { id }) {
+      return dispatch("fetchItem", { resource: "categories", id });
+    },
+
+    fetchForum({ dispatch }, { id }) {
+      return dispatch("fetchItem", { resource: "forums", id });
     },
     fetchThread({ dispatch }, { id }) {
       return dispatch("fetchItem", { resource: "threads", id });
@@ -101,8 +106,23 @@ export default new Vuex.Store({
     fetchPost({ dispatch }, { id }) {
       return dispatch("fetchItem", { resource: "posts", id });
     },
+    fetchPosts({ dispatch }, { ids }) {
+      return dispatch("fetchItems", { resource: "posts", ids });
+    },
     fetchForums({ dispatch }, { ids }) {
       return dispatch("fetchItems", { resource: "forums", ids });
+    },
+    fetchCategories(context, { ids }) {
+      return context.dispatch("fetchItems", {
+        resource: "categories",
+        ids
+      });
+    },
+    fetchThreads(context, { ids }) {
+      return context.dispatch("fetchItems", {
+        resource: "threads",
+        ids
+      });
     },
     fetchAllCategories({ state, commit }) {
       return new Promise(resolve => {

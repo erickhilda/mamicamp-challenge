@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full push-top">
+  <div v-if="thread && text" class="col-full push-top">
     <h1>
       Editing <i>{{ thread.title }}</i>
     </h1>
@@ -31,7 +31,8 @@ export default {
       return this.$store.state.threads[this.id];
     },
     text() {
-      return this.$store.state.posts[this.thread.firstPostId].text;
+      const post = this.$store.state.posts[this.thread.firstPostId].text;
+      return post;
     }
   },
   methods: {
@@ -52,6 +53,13 @@ export default {
     cancel() {
       this.$router.push({ name: "Forum", params: { id: this.forum[".key"] } });
     }
+  },
+  created() {
+    this.$store
+      .dispatch("fetchThread", { id: this.id })
+      .then(thread =>
+        this.$store.dispatch("fetchPost", { id: thread.firstPostId })
+      );
   }
 };
 </script>

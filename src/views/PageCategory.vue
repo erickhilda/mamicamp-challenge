@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full">
+  <div v-if="category" class="col-full">
     <h1>{{ category.name }}</h1>
     <category-list-item :category="category" />
   </div>
