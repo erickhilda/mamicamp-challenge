@@ -71,7 +71,6 @@ export default {
   },
   created() {
     this.fetchThread({ id: this.id }).then(thread => {
-      console.log(thread.userId);
       this.fetchUser({ id: thread.userId });
       this.fetchPosts({ ids: Object.keys(thread.posts) }).then(posts => {
         posts.forEach(post => {
