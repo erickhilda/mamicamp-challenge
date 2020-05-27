@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import PostList from "@/components/Post/PostList";
 import PostEditor from "@/components/Post/PostEditor";
 
@@ -47,11 +48,11 @@ export default {
         postIds.includes(post[".key"])
       );
     },
-    user() {
-      return this.$store.state.users[this.thread.userId];
-    },
     thread() {
       return this.$store.state.threads[this.id];
+    },
+    user() {
+      return this.$store.state.users[this.thread.userId];
     },
     repliesCount() {
       return this.$store.getters.threadRepliesCount(this.thread[".key"]);
@@ -65,16 +66,18 @@ export default {
         .length;
     }
   },
+  methods: {
+    ...mapActions(["fetchThread", "fetchUser", "fetchPosts", "fetchUser"])
+  },
   created() {
-    this.$store.dispatch("fetchThread", { id: this.id }).then(thread => {
-      this.$store.dispatch("fetchUser", { id: thread.userId });
-      this.$store
-        .dispatch("fetchPosts", { ids: Object.keys(thread.posts) })
-        .then(posts => {
-          posts.forEach(post => {
-            this.$store.dispatch("fetchUser", { id: post.userId });
-          });
+    this.fetchThread({ id: this.id }).then(thread => {
+      console.log(thread.userId);
+      this.fetchUser({ id: thread.userId });
+      this.fetchPosts({ ids: Object.keys(thread.posts) }).then(posts => {
+        posts.forEach(post => {
+          this.fetchUser({ id: post.userId });
         });
+      });
     });
   }
 };
