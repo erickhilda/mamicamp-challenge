@@ -85,15 +85,23 @@ export default new Vuex.Store({
           });
       });
     },
+    fetchItems({ dispatch }, { ids, resource, emoji }) {
+      return Promise.all(
+        ids.map(id => dispatch("fetchItem", { id, resource, emoji }))
+      );
+    },
+    fetchPosts({ dispatch }, { ids }) {
+      return dispatch("fetchItems", { resource: "posts", emoji: "💬", ids });
+    },
     fetchThread({ dispatch }, { id }) {
       return dispatch("fetchItem", { resource: "threads", id, emoji: "📄" });
     },
     fetchUser({ dispatch }, { id }) {
       return dispatch("fetchItem", { resource: "users", id, emoji: "🙋" });
     },
-    fetchPost({ dispatch }, { id }) {
-      return dispatch("fetchItem", { resource: "posts", id, emoji: "💬" });
-    },
+    // fetchPost({ dispatch }, { id }) {
+    //   return dispatch("fetchItem", { resource: "posts", id, emoji: "💬" });
+    // },
     createPost({ commit, state }, post) {
       const postId = "greatPost" + Math.random();
       post[".key"] = postId;
