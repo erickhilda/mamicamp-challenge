@@ -68,8 +68,7 @@ export default new Vuex.Store({
       objectPropertiesCounter(state.threads[id].posts) - 1
   },
   actions: {
-    fetchItem({ state, commit }, { id, emoji, resource }) {
-      console.log("🔥‍", emoji, id);
+    fetchItem({ state, commit }, { id, resource }) {
       return new Promise(resolve => {
         firebase
           .database()
@@ -85,25 +84,47 @@ export default new Vuex.Store({
           });
       });
     },
-    fetchItems({ dispatch }, { ids, resource, emoji }) {
+    fetchItems({ dispatch }, { ids, resource }) {
       return Promise.all(
-        ids.map(id => dispatch("fetchItem", { id, resource, emoji }))
+        ids.map(id => dispatch("fetchItem", { id, resource }))
       );
     },
     fetchPosts({ dispatch }, { ids }) {
-      return dispatch("fetchItems", { resource: "posts", emoji: "💬", ids });
+      return dispatch("fetchItems", { resource: "posts", ids });
     },
     fetchThread({ dispatch }, { id }) {
-      return dispatch("fetchItem", { resource: "threads", id, emoji: "📄" });
+      return dispatch("fetchItem", { resource: "threads", id });
     },
     fetchUser({ dispatch }, { id }) {
-      return dispatch("fetchItem", { resource: "users", id, emoji: "🙋" });
+      return dispatch("fetchItem", { resource: "users", id });
     },
-    // fetchPost({ dispatch }, { id }) {
-    //   return dispatch("fetchItem", { resource: "posts", id, emoji: "💬" });
-    // },
+    fetchPost({ dispatch }, { id }) {
+      return dispatch("fetchItem", { resource: "posts", id });
+    },
+    fetchForums({ dispatch }, { ids }) {
+      return dispatch("fetchItems", { resource: "forums", ids });
+    },
+    fetchAllCategories({ state, commit }) {
+      return new Promise(resolve => {
+        firebase
+          .database()
+          .ref("categories")
+          .once("value", snapshot => {
+            const categoriesObject = snapshot.val();
+            Object.keys(categoriesObject).forEach(categoryId => {
+              const category = categoriesObject[categoryId];
+              commit("setItem", {
+                resource: "categories",
+                id: categoryId,
+                item: category
+              });
+            });
+            resolve(Object.values(state.categories));
+          });
+      });
+    },
     createPost({ commit, state }, post) {
-      const postId = "greatPost" + Math.random();
+      const postId = "post" + Math.random();
       post[".key"] = postId;
       post.userId = state.authId;
       post.publishedAt = Math.floor(Date.now() / 1000);

@@ -15,6 +15,15 @@ export default {
     categories() {
       return Object.values(this.$store.state.categories);
     }
+  },
+  created() {
+    this.$store.dispatch("fetchAllCategories").then(categories => {
+      categories.forEach(category =>
+        this.$store.dispatch("fetchForums", {
+          ids: Object.keys(category.forums)
+        })
+      );
+    });
   }
 };
 </script>
