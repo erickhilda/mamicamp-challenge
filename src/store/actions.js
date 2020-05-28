@@ -195,6 +195,19 @@ export default {
     commit("setUser", { userId: user[".key"], user });
   },
 
+  signInWithEmailAndPassword(context, { email, password }) {
+    return firebase.auth().signInWithEmailAndPassword(email, password);
+  },
+
+  signOut({ commit }) {
+    return firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        commit("setAuthId", null);
+      });
+  },
+
   fetchAuthUser({ dispatch, commit }) {
     const userId = firebase.auth().currentUser.uid;
     return dispatch("fetchUser", { id: userId }).then(() => {

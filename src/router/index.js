@@ -7,6 +7,7 @@ import PageThreadEdit from "@/views/PageThreadEdit";
 import PageNotFound from "@/views/PageNotFound";
 import PageForum from "@/views/PageForum";
 import PageRegister from "@/views/PageRegister";
+import PageSignIn from "@/views/PageSignIn";
 import PageCategory from "@/views/PageCategory";
 import PageProfile from "@/views/PageProfile";
 
@@ -23,6 +24,12 @@ const routes = [
     name: "Register",
     props: true,
     component: PageRegister
+  },
+  {
+    path: "/signin",
+    name: "Signin",
+    props: true,
+    component: PageSignIn
   },
   {
     path: "/forum/:id",

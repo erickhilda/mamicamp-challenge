@@ -2,7 +2,7 @@ import { objectPropertiesCounter } from "@/helpers/objectPropertiesCounter";
 
 export default {
   authenticatedUser(state) {
-    return state.users[state.authId];
+    return state.authId ? state.users[state.authId] : null;
   },
 
   userThreadsCount: state => id =>

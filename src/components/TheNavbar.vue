@@ -11,9 +11,9 @@
     </div>
 
     <nav class="navbar">
-      <ul>
-        <li class="navbar-user" v-if="user">
-          <router-link :to="{ name: 'Profile' }" class="logo">
+      <ul v-if="user">
+        <li class="navbar-user">
+          <a @click.prevent="isDropdownOpen = !isDropdownOpen">
             <img class="avatar-small" :src="user.avatar" alt="avatar-img" />
             <span>
               {{ user.name }}
@@ -23,16 +23,28 @@
                 alt=""
               />
             </span>
-          </router-link>
-          <div id="user-dropdown">
+          </a>
+          <div id="user-dropdown" :class="{ 'active-drop': isDropdownOpen }">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
               <li class="dropdown-menu-item">
-                <a href="profile.html">View profile</a>
+                <router-link :to="{ name: 'Profile' }">
+                  View Profile
+                </router-link>
               </li>
-              <li class="dropdown-menu-item"><a href="#">Log out</a></li>
+              <li class="dropdown-menu-item">
+                <a @click.prevent="$store.dispatch('signOut')">Sign Out</a>
+              </li>
             </ul>
           </div>
+        </li>
+      </ul>
+      <ul v-else>
+        <li class="navbar-item">
+          <router-link :to="{ name: 'Signin' }">Sign In</router-link>
+        </li>
+        <li class="navbar-item">
+          <router-link :to="{ name: 'Register' }">Register</router-link>
         </li>
       </ul>
     </nav>
@@ -43,6 +55,11 @@
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      isDropdownOpen: false
+    };
+  },
   computed: {
     ...mapGetters({
       user: "authenticatedUser"
