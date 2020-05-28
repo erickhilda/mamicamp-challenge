@@ -1,6 +1,51 @@
 import firebase from "firebase";
 
 export default {
+  createUser({ state, commit }, { id, email, name, username, avatar = null }) {
+    return new Promise(resolve => {
+      const registeredAt = Math.floor(Date.now() / 1000);
+      const usernameLower = username.toLowerCase();
+      email = email.toLowerCase();
+      const user = {
+        avatar,
+        email,
+        name,
+        username,
+        usernameLower,
+        registeredAt
+      };
+
+      firebase
+        .database()
+        .ref("users")
+        .child(id)
+        .set(user)
+        .then(() => {
+          commit("setItem", { resource: "users", id: id, item: user });
+          resolve(state.users[id]);
+        });
+    });
+  },
+
+  registerUserWithEmailAndPassword(
+    { dispatch },
+    { email, name, username, password, avatar = null }
+  ) {
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(data => {
+        return dispatch("createUser", {
+          id: data.user.uid,
+          email,
+          name,
+          username,
+          password,
+          avatar
+        });
+      });
+  },
+
   createPost({ commit, state }, post) {
     const postId = firebase
       .database()
