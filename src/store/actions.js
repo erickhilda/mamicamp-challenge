@@ -173,7 +173,6 @@ export default {
     dispatch("fetchItems", { resource: "users", ids }),
 
   fetchAllCategories({ state, commit }) {
-    console.log("🔥", "🏷", "all");
     return new Promise(resolve => {
       firebase
         .database()
