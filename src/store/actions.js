@@ -151,26 +151,26 @@ export default {
   },
 
   fetchCategory: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", { resource: "categories", id, emoji: "🏷" }),
+    dispatch("fetchItem", { resource: "categories", id }),
   fetchForum: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", { resource: "forums", id, emoji: "🌧" }),
+    dispatch("fetchItem", { resource: "forums", id }),
   fetchThread: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", { resource: "threads", id, emoji: "📄" }),
+    dispatch("fetchItem", { resource: "threads", id }),
   fetchPost: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", { resource: "posts", id, emoji: "💬" }),
+    dispatch("fetchItem", { resource: "posts", id }),
   fetchUser: ({ dispatch }, { id }) =>
-    dispatch("fetchItem", { resource: "users", id, emoji: "🙋" }),
+    dispatch("fetchItem", { resource: "users", id }),
 
   fetchCategories: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", { resource: "categories", ids, emoji: "🏷" }),
+    dispatch("fetchItems", { resource: "categories", ids }),
   fetchForums: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", { resource: "forums", ids, emoji: "🌧" }),
+    dispatch("fetchItems", { resource: "forums", ids }),
   fetchThreads: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", { resource: "threads", ids, emoji: "🌧" }),
+    dispatch("fetchItems", { resource: "threads", ids }),
   fetchPosts: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", { resource: "posts", ids, emoji: "💬" }),
+    dispatch("fetchItems", { resource: "posts", ids }),
   fetchUsers: ({ dispatch }, { ids }) =>
-    dispatch("fetchItems", { resource: "users", ids, emoji: "🙋" }),
+    dispatch("fetchItems", { resource: "users", ids }),
 
   fetchAllCategories({ state, commit }) {
     console.log("🔥", "🏷", "all");
@@ -193,8 +193,7 @@ export default {
     });
   },
 
-  fetchItem({ state, commit }, { id, emoji, resource }) {
-    console.log("🔥‍", emoji, id);
+  fetchItem({ state, commit }, { id, resource }) {
     return new Promise(resolve => {
       firebase
         .database()
@@ -211,10 +210,8 @@ export default {
     });
   },
 
-  fetchItems({ dispatch }, { ids, resource, emoji }) {
+  fetchItems({ dispatch }, { ids, resource }) {
     ids = Array.isArray(ids) ? ids : Object.keys(ids);
-    return Promise.all(
-      ids.map(id => dispatch("fetchItem", { id, resource, emoji }))
-    );
+    return Promise.all(ids.map(id => dispatch("fetchItem", { id, resource })));
   }
 };
