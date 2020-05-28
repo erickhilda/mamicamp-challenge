@@ -35,7 +35,7 @@
       </form>
 
       <div class="push-top text-center">
-        <button class="btn-red btn-xsmall">
+        <button class="btn-red btn-xsmall" @click="signInWithGoogle">
           <i class="fa fa-google fa-btn"></i>Sign in with Google
         </button>
       </div>
@@ -60,6 +60,12 @@ export default {
           email: this.form.email,
           password: this.form.password
         })
+        .then(() => this.$router.push({ name: "Home" }))
+        .catch(error => alert("🤷‍️" + error.message));
+    },
+    signInWithGoogle() {
+      this.$store
+        .dispatch("signInWithGoogle")
         .then(() => this.$router.push({ name: "Home" }))
         .catch(error => alert("🤷‍️" + error.message));
     }
