@@ -6,6 +6,7 @@ import PageThreadCreate from "@/views/PageThreadCreate";
 import PageThreadEdit from "@/views/PageThreadEdit";
 import PageNotFound from "@/views/PageNotFound";
 import PageForum from "@/views/PageForum";
+import PageRegister from "@/views/PageRegister";
 import PageCategory from "@/views/PageCategory";
 import PageProfile from "@/views/PageProfile";
 
@@ -16,6 +17,12 @@ const routes = [
     path: "/",
     name: "Home",
     component: PageHome
+  },
+  {
+    path: "/register",
+    name: "Register",
+    props: true,
+    component: PageRegister
   },
   {
     path: "/forum/:id",
