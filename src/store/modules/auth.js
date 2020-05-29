@@ -40,7 +40,7 @@ export default {
       return firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(user => {
+        .then(({ user }) => {
           return dispatch(
             "users/createUser",
             { id: user.uid, email, name, username, password, avatar },

@@ -79,7 +79,7 @@ export default {
     register() {
       this.$store
         .dispatch("auth/registerUserWithEmailAndPassword", this.form)
-        .then(() => this.$router.successRedirect());
+        .then(() => this.successRedirect());
     },
     registerWithGoogle() {
       this.$store
