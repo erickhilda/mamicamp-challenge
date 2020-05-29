@@ -64,7 +64,7 @@ export default {
       this.asyncDataStatus_fetched();
     });
   },
-  beforeRouteEnter(to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (this.hasUnsavedChanges) {
       const confirmed = window.confirm(
         "Are you sure you want to leave? Unsaved changes will be lost."
