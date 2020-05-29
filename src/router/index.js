@@ -29,7 +29,7 @@ const routes = [
   },
   {
     path: "/signin",
-    name: "Signin",
+    name: "SignIn",
     props: true,
     component: PageSignIn,
     meta: { requiresGuest: true }
@@ -109,13 +109,13 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   console.log(`🚦 navigating to ${to.name} from ${from.name}`);
-  store.dispatch("initAuthentication").then(user => {
+  store.dispatch("auth/initAuthentication").then(user => {
     if (to.matched.some(route => route.meta.requiresAuth)) {
       // protected route
       if (user) {
         next();
       } else {
-        next({ name: "Signin", query: { redirectTo: to.path } });
+        next({ name: "SignIn", query: { redirectTo: to.path } });
       }
     } else if (to.matched.some(route => route.meta.requiresGuest)) {
       // protected route

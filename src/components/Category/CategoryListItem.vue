@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     forumsGroup() {
-      return Object.values(this.$store.state.forums).filter(
+      return Object.values(this.$store.state.forums.items).filter(
         forum => forum.categoryId === this.category[".key"]
       );
     }

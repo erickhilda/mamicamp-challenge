@@ -33,7 +33,7 @@
                 </router-link>
               </li>
               <li class="dropdown-menu-item">
-                <a @click.prevent="$store.dispatch('signOut')">Sign Out</a>
+                <a @click.prevent="$store.dispatch('auth/signOut')">Sign Out</a>
               </li>
             </ul>
           </div>
@@ -41,7 +41,7 @@
       </ul>
       <ul v-else>
         <li class="navbar-item">
-          <router-link :to="{ name: 'Signin' }">Sign In</router-link>
+          <router-link :to="{ name: 'SignIn' }">Sign In</router-link>
         </li>
         <li class="navbar-item">
           <router-link :to="{ name: 'Register' }">Register</router-link>
@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      user: "authenticatedUser"
+      user: "auth/authUser"
     })
   }
 };

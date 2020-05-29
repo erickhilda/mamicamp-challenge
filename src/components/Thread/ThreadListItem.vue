@@ -30,10 +30,12 @@ export default {
   },
   computed: {
     repliesCount() {
-      return this.$store.getters.threadRepliesCount(this.thread[".key"]);
+      return this.$store.getters["threads/threadRepliesCount"](
+        this.thread[".key"]
+      );
     },
     user() {
-      return this.$store.state.users[this.thread.userId];
+      return this.$store.state.users.items[this.thread.userId];
     }
   }
 };

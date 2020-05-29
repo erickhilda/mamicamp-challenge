@@ -24,10 +24,10 @@
     </p>
 
     <post-list :posts="posts" />
-    <post-editor v-if="authenticatedUser" :thread-id="id" />
+    <post-editor v-if="authUser" :thread-id="id" />
 
     <div v-else class="text-center" style="margin-bottom: 50px;">
-      <router-link :to="{ name: 'Signin', query: { redirectTo: $route.path } }">
+      <router-link :to="{ name: 'SignIn', query: { redirectTo: $route.path } }">
         Sign in
       </router-link>
       or
@@ -58,22 +58,24 @@ export default {
   mixins: [asyncDataStatus],
   computed: {
     ...mapGetters({
-      authenticatedUser: "authenticatedUser"
+      authUser: "auth/authUser"
     }),
     posts() {
       const postIds = Object.values(this.thread.posts);
-      return Object.values(this.$store.state.posts).filter(post =>
+      return Object.values(this.$store.state.posts.items).filter(post =>
         postIds.includes(post[".key"])
       );
     },
     thread() {
-      return this.$store.state.threads[this.id];
+      return this.$store.state.threads.items[this.id];
     },
     user() {
-      return this.$store.state.users[this.thread.userId];
+      return this.$store.state.users.items[this.thread.userId];
     },
     repliesCount() {
-      return this.$store.getters.threadRepliesCount(this.thread[".key"]);
+      return this.$store.getters["threads/threadRepliesCount"](
+        this.thread[".key"]
+      );
     },
     contributorsCount() {
       const replies = Object.keys(this.thread.posts)
@@ -85,7 +87,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["fetchThread", "fetchUser", "fetchPosts", "fetchUser"])
+    ...mapActions("threads", ["fetchThread"]),
+    ...mapActions("users", ["fetchUser"]),
+    ...mapActions("posts", ["fetchPosts"])
   },
   created() {
     this.fetchThread({ id: this.id })

@@ -31,15 +31,16 @@ export default {
   mixins: [asyncDataStatus],
   computed: {
     thread() {
-      return this.$store.state.threads[this.id];
+      return this.$store.state.threads.items[this.id];
     },
     text() {
-      const post = this.$store.state.posts[this.thread.firstPostId].text;
+      const post = this.$store.state.posts.items[this.thread.firstPostId].text;
       return post;
     }
   },
   methods: {
-    ...mapActions(["updateThread", "fetchThread", "fetchPost"]),
+    ...mapActions("threads", ["updateThread", "fetchThread"]),
+    ...mapActions("posts", ["fetchPost"]),
     save({ title, text }) {
       this.updateThread({
         id: this.id,

@@ -23,11 +23,12 @@ export default {
   },
   computed: {
     category() {
-      return this.$store.state.categories[this.id];
+      return this.$store.state.categories.items[this.id];
     }
   },
   methods: {
-    ...mapActions(["fetchCategory", "fetchForums"])
+    ...mapActions("categories", ["fetchCategory"]),
+    ...mapActions("forums", ["fetchForums"])
   },
   created() {
     this.fetchCategory({ id: this.id })

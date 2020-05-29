@@ -78,12 +78,12 @@ export default {
   methods: {
     register() {
       this.$store
-        .dispatch("registerUserWithEmailAndPassword", this.form)
+        .dispatch("auth/registerUserWithEmailAndPassword", this.form)
         .then(() => this.$router.successRedirect());
     },
     registerWithGoogle() {
       this.$store
-        .dispatch("signInWithGoogle")
+        .dispatch("auth/signInWithGoogle")
         .then(() => this.successRedirect());
     },
     successRedirect() {

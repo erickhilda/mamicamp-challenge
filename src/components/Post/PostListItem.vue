@@ -17,7 +17,7 @@
           {{ post.text }}
         </div>
         <a
-          v-if="authenticatedUser"
+          v-if="authUser"
           @click.prevent="editing = true"
           href="#"
           style="margin-left: auto;"
@@ -79,16 +79,16 @@ export default {
   },
   computed: {
     ...mapGetters({
-      authenticatedUser: "authenticatedUser"
+      authUser: "auth/authUser"
     }),
     user() {
-      return this.$store.state.users[this.post.userId];
+      return this.$store.state.users.items[this.post.userId];
     },
     userPostsCount() {
-      return this.$store.getters.userPostsCount(this.post.userId);
+      return this.$store.getters["users/userPostsCount"](this.post.userId);
     },
     userThreadsCount() {
-      return this.$store.getters.userThreadsCount(this.post.userId);
+      return this.$store.getters["users/userThreadsCount"](this.post.userId);
     }
   }
 };
