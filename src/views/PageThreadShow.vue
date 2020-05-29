@@ -1,5 +1,5 @@
 <template>
-  <div class="col-full">
+  <div v-if="asyncDataStatus_ready" class="col-large push-top">
     <h1>
       {{ thread.title }}
 
@@ -11,29 +11,46 @@
         Edit Thread
       </router-link>
     </h1>
-
     <p>
-      By <a href="#" class="link-unstyled">{{ user.name }},</a>
-      <app-date :timestamp="thread.publishedAt" />.
+      By <a href="#" class="link-unstyled">{{ user.name }}</a
+      >, <AppDate :timestamp="thread.publishedAt" />.
       <span
         style="float:right; margin-top: 2px;"
         class="hide-mobile text-faded text-small"
+        >{{ repliesCount }} replies by
+        {{ contributorsCount }} contributors</span
       >
-        {{ repliesCount }} replies by {{ contributorsCount }} contributors
-      </span>
     </p>
-
     <post-list :posts="posts" />
-    <post-editor :thread-id="id" />
+    <post-editor v-if="authUser" :threadId="id" />
+    <div v-else class="text-center" style="margin-bottom: 50px;">
+      <router-link :to="{ name: 'SignIn', query: { redirectTo: $route.path } }"
+        >Sign in</router-link
+      >
+      or
+      <router-link
+        :to="{ name: 'Register', query: { redirectTo: $route.path } }"
+      >
+        Register
+      </router-link>
+      to post a reply.
+    </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import PostList from "@/components/Post/PostList";
 import PostEditor from "@/components/Post/PostEditor";
+import asyncDataStatus from "@/mixins/asyncDataStatus";
+import { objectPropertiesCounter } from "@/helpers/objectPropertiesCounter";
 
 export default {
-  components: { PostList, PostEditor },
+  components: {
+    PostList,
+    PostEditor
+  },
+  mixins: [asyncDataStatus],
   props: {
     id: {
       required: true,
@@ -41,29 +58,53 @@ export default {
     }
   },
   computed: {
-    posts() {
-      const postIds = Object.values(this.thread.posts);
-      return Object.values(this.$store.state.posts).filter(post =>
-        postIds.includes(post[".key"])
+    ...mapGetters({
+      authUser: "auth/authUser"
+    }),
+    thread() {
+      return this.$store.state.threads.items[this.id];
+    },
+    repliesCount() {
+      return this.$store.getters["threads/threadRepliesCount"](
+        this.thread[".key"]
       );
     },
     user() {
-      return this.$store.state.users[this.thread.userId];
-    },
-    thread() {
-      return this.$store.state.threads[this.id];
-    },
-    repliesCount() {
-      return this.$store.getters.threadRepliesCount(this.thread[".key"]);
+      return this.$store.state.users.items[this.thread.userId];
     },
     contributorsCount() {
-      const replies = Object.keys(this.thread.posts)
-        .filter(postId => postId !== this.thread.firstPostId)
-        .map(postId => this.$store.state.posts[postId]);
-      const userIds = replies.map(post => post.userId);
-      return userIds.filter((item, index) => index === userIds.indexOf(item))
-        .length;
+      return objectPropertiesCounter(this.thread.contributors);
+    },
+    posts() {
+      const postIds = Object.values(this.thread.posts);
+      return Object.values(this.$store.state.posts.items).filter(post =>
+        postIds.includes(post[".key"])
+      );
     }
+  },
+  methods: {
+    ...mapActions("threads", ["fetchThread"]),
+    ...mapActions("users", ["fetchUser"]),
+    ...mapActions("posts", ["fetchPosts"])
+  },
+  created() {
+    // fetch thread
+    this.fetchThread({ id: this.id })
+      .then(thread => {
+        // fetch user
+        this.fetchUser({ id: thread.userId });
+        return this.fetchPosts({ ids: Object.keys(thread.posts) });
+      })
+      .then(posts => {
+        return Promise.all(
+          posts.map(post => {
+            this.fetchUser({ id: post.userId });
+          })
+        );
+      })
+      .then(() => {
+        this.asyncDataStatus_fetched();
+      });
   }
 };
 </script>
