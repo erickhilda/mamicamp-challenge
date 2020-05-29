@@ -234,6 +234,23 @@ export default {
       });
   },
 
+  initAuthentication({ dispatch, commit, state }) {
+    return new Promise(resolve => {
+      if (state.unsubscribeAuthObserver) {
+        state.unsubscribeAuthObserver();
+      }
+
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          dispatch("fetchAuthUser").then(dbUser => resolve(dbUser));
+        } else {
+          resolve(null);
+        }
+      });
+      commit("setUnsubscribeAuthObserver", unsubscribe);
+    });
+  },
+
   fetchAuthUser({ dispatch, commit }) {
     const userId = firebase.auth().currentUser.uid;
     return new Promise(resolve => {
