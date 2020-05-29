@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "@/store";
 import PageHome from "@/views/PageHome.vue";
 import PageThreadShow from "@/views/PageThreadShow";
 import PageThreadCreate from "@/views/PageThreadCreate";
@@ -41,7 +42,14 @@ const routes = [
     path: "/user",
     name: "Profile",
     props: true,
-    component: PageProfile
+    component: PageProfile,
+    beforeRouteEnter(to, from, next) {
+      if (store.state.authId) {
+        next();
+      } else {
+        next({ name: "Home" });
+      }
+    }
   },
   {
     path: "/user/edit",
@@ -74,6 +82,13 @@ const routes = [
     component: PageThreadEdit
   },
   {
+    path: "/logout",
+    name: "SignOut",
+    beforeEnter(to, from, next) {
+      store.dispatch("signOut").then(() => next({ name: "Home" }));
+    }
+  },
+  {
     path: "*",
     name: "NotFound",
     component: PageNotFound
@@ -84,6 +99,20 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  console.log(`🚦 navigating to ${to.name} from ${from.name}`);
+  if (to.matched.some(route => route.meta.requiresAuth)) {
+    // protected route
+    if (store.state.authId) {
+      next();
+    } else {
+      next({ name: "Home" });
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

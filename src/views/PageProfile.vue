@@ -1,29 +1,30 @@
 <template>
   <div class="flex-grid">
-    <profile-card v-if="!edit" :user="user" />
-    <profile-card-editor v-else :user="user" />
+    <!-- <profile-card v-if="!edit" :user="user" />
+    <profile-card-editor v-else :user="user" /> -->
     <div class="col-7 push-top">
-      <div class="profile-header">
+      <h1>My Profile</h1>
+      <!-- <div class="profile-header">
         <span class="text-lead"> {{ user.name }} recent activity </span>
         <a href="#">See only started threads?</a>
-      </div>
-      <hr />
-      <post-list :posts="userPosts" />
+      </div> -->
+      <!-- <hr />
+      <post-list :posts="userPosts" /> -->
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import PostList from "@/components/Post/PostList";
-import ProfileCard from "@/components/Profile/ProfileCard";
-import ProfileCardEditor from "@/components/Profile/ProfileCardEditor";
+// import PostList from "@/components/Post/PostList";
+// import ProfileCard from "@/components/Profile/ProfileCard";
+// import ProfileCardEditor from "@/components/Profile/ProfileCardEditor";
 
 export default {
   components: {
-    PostList,
-    ProfileCard,
-    ProfileCardEditor
+    // PostList,
+    // ProfileCard,
+    // ProfileCardEditor
   },
   props: {
     edit: {
@@ -43,6 +44,9 @@ export default {
       }
       return [];
     }
+  },
+  created() {
+    this.$emit("ready");
   }
 };
 </script>
