@@ -5,6 +5,7 @@
     </h1>
 
     <thread-editor
+      ref="editor"
       :title="thread.title"
       :text="text"
       @save="save"
@@ -22,20 +23,26 @@ export default {
   components: {
     ThreadEditor
   },
+  mixins: [asyncDataStatus],
   props: {
     id: {
       type: String,
       required: true
     }
   },
-  mixins: [asyncDataStatus],
   computed: {
     thread() {
       return this.$store.state.threads.items[this.id];
     },
     text() {
-      const post = this.$store.state.posts.items[this.thread.firstPostId].text;
-      return post;
+      const post = this.$store.state.posts.items[this.thread.firstPostId];
+      return post ? post.text : null;
+    },
+    hasUnsavedChanges() {
+      return (
+        this.$refs.editor.form.title !== this.thread.title ||
+        this.$refs.editor.form.text !== this.text
+      );
     }
   },
   methods: {
@@ -46,23 +53,34 @@ export default {
         id: this.id,
         title,
         text
-      }).then(thread => {
-        this.$router.push({
-          name: "ThreadShow",
-          params: { id: thread[".key"] }
-        });
+      }).then(() => {
+        this.$router.push({ name: "ThreadShow", params: { id: this.id } });
       });
     },
     cancel() {
-      this.$router.push({ name: "Forum", params: { id: this.forum[".key"] } });
+      this.$router.push({ name: "ThreadShow", params: { id: this.id } });
     }
   },
   created() {
-    this.fetchThread({ id: this.id }).then(thread =>
-      this.fetchPost({ id: thread.firstPostId }).then(() => {
+    this.fetchThread({ id: this.id })
+      .then(thread => this.fetchPost({ id: thread.firstPostId }))
+      .then(() => {
         this.asyncDataStatus_fetched();
-      })
-    );
+      });
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.hasUnsavedChanges) {
+      const confirmed = window.confirm(
+        "Are you sure you want to leave? Any unsaved changes will be lost!"
+      );
+      if (confirmed) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
   }
 };
 </script>
