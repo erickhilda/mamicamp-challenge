@@ -24,13 +24,15 @@ const routes = [
     path: "/register",
     name: "Register",
     props: true,
-    component: PageRegister
+    component: PageRegister,
+    meta: { requiresGuest: true }
   },
   {
     path: "/signin",
     name: "Signin",
     props: true,
-    component: PageSignIn
+    component: PageSignIn,
+    meta: { requiresGuest: true }
   },
   {
     path: "/forum/:id",
@@ -55,7 +57,8 @@ const routes = [
     path: "/user/edit",
     name: "ProfileEdit",
     props: { edit: true },
-    component: PageProfile
+    component: PageProfile,
+    meta: { requiresAuth: true }
   },
   {
     path: "/category/:id",
@@ -67,7 +70,8 @@ const routes = [
     path: "/thread/create/:forumId",
     name: "ThreadCreate",
     props: true,
-    component: PageThreadCreate
+    component: PageThreadCreate,
+    meta: { requiresAuth: true }
   },
   {
     path: "/thread/:id",
@@ -79,14 +83,16 @@ const routes = [
     path: "/thread/:id/edit",
     name: "ThreadEdit",
     props: true,
-    component: PageThreadEdit
+    component: PageThreadEdit,
+    meta: { requiresAuth: true }
   },
   {
     path: "/logout",
     name: "SignOut",
     beforeEnter(to, from, next) {
       store.dispatch("signOut").then(() => next({ name: "Home" }));
-    }
+    },
+    meta: { requiresAuth: true }
   },
   {
     path: "*",
@@ -107,6 +113,13 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(route => route.meta.requiresAuth)) {
       // protected route
       if (user) {
+        next();
+      } else {
+        next({ name: "Signin" });
+      }
+    } else if (to.matched.some(route => route.meta.requiresGuest)) {
+      // protected route
+      if (!user) {
         next();
       } else {
         next({ name: "Home" });
