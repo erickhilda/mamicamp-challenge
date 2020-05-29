@@ -17,6 +17,7 @@
           {{ post.text }}
         </div>
         <a
+          v-if="authenticatedUser"
           @click.prevent="editing = true"
           href="#"
           style="margin-left: auto;"
@@ -44,6 +45,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import PostEditor from "@/components/Post/PostEditor";
 
 export default {
@@ -76,6 +78,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({
+      authenticatedUser: "authenticatedUser"
+    }),
     user() {
       return this.$store.state.users[this.post.userId];
     },
