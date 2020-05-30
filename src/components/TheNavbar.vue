@@ -1,16 +1,21 @@
 <template>
-  <header class="header" id="header">
+  <header
+    class="header"
+    id="header"
+    v-click-outside="closeMobileNavbar"
+    v-handle-scroll="closeMobileNavbar"
+  >
     <router-link :to="{ name: 'Home' }" class="logo">
       <img src="../assets/img/vueschool-logo.svg" />
     </router-link>
 
-    <div class="btn-hamburger">
+    <div class="btn-hamburger" @click="mobileNavOpen = !mobileNavOpen">
       <div class="top bar"></div>
       <div class="middle bar"></div>
       <div class="bottom bar"></div>
     </div>
 
-    <nav class="navbar">
+    <nav class="navbar" :class="{ 'navbar-open': mobileNavOpen }">
       <ul v-if="user">
         <li class="navbar-user" v-click-outside="closeUserDropdown">
           <a @click.prevent="isDropdownOpen = !isDropdownOpen">
@@ -38,6 +43,12 @@
             </ul>
           </div>
         </li>
+        <li class="navbar-mobile-item">
+          <router-link :to="{ name: 'Profile' }">View Profile</router-link>
+        </li>
+        <li class="navbar-mobile-item">
+          <a @click.prevent="$store.dispatch('auth/signOut')">Sign Out</a>
+        </li>
       </ul>
       <ul v-else>
         <li class="navbar-item">
@@ -54,14 +65,17 @@
 <script>
 import { mapGetters } from "vuex";
 import clickOutside from "@/directives/click-outside";
+import handleScroll from "@/directives/handle-scroll";
 
 export default {
   directives: {
-    clickOutside
+    clickOutside,
+    handleScroll
   },
   data() {
     return {
-      isDropdownOpen: false
+      isDropdownOpen: false,
+      mobileNavOpen: false
     };
   },
   computed: {
@@ -72,6 +86,9 @@ export default {
   methods: {
     closeUserDropdown() {
       this.isDropdownOpen = false;
+    },
+    closeMobileNavbar() {
+      this.mobileNavOpen = false;
     }
   }
 };
