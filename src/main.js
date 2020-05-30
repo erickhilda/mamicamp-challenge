@@ -6,8 +6,10 @@ import router from "./router";
 import store from "./store";
 import AppDate from "@/components/AppDate";
 import firebase from "firebase";
+import vuelidate from "vuelidate";
 
 Vue.component("AppDate", AppDate);
+Vue.use(vuelidate);
 
 Vue.config.productionTip = false;
 const firebaseConfig = {

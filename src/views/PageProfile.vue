@@ -5,11 +5,12 @@
       <profile-card-editor v-else :user="user" />
       <div class="col-7 push-top">
         <div class="profile-header">
-          <span class="text-lead"> {{ user.name }} recent activity </span>
+          <span class="text-lead"> {{ user.username }} recent activity </span>
           <a href="#">See only started threads?</a>
         </div>
         <hr />
-        <post-list :posts="userPosts" />
+        <post-list v-if="userPosts.length > 0" :posts="userPosts" />
+        <div v-else>There is no recent activity to display.</div>
       </div>
     </template>
     <div v-else class="text-center" style="margin-bottom: 50px;">
@@ -56,9 +57,13 @@ export default {
     }
   },
   created() {
-    this.$store
-      .dispatch("posts/fetchPosts", { ids: this.user.posts })
-      .then(() => this.asyncDataStatus_fetched());
+    if (this.user.posts) {
+      this.$store
+        .dispatch("posts/fetchPosts", { ids: this.user.posts })
+        .then(() => this.asyncDataStatus_fetched());
+    } else {
+      this.asyncDataStatus_fetched();
+    }
   }
 };
 </script>

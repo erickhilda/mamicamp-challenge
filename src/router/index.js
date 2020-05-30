@@ -45,13 +45,7 @@ const routes = [
     name: "Profile",
     props: true,
     component: PageProfile,
-    beforeRouteEnter(to, from, next) {
-      if (store.state.authId) {
-        next();
-      } else {
-        next({ name: "Home" });
-      }
-    }
+    meta: { requiresAuth: true }
   },
   {
     path: "/user/edit",
@@ -111,14 +105,12 @@ router.beforeEach((to, from, next) => {
   console.log(`🚦 navigating to ${to.name} from ${from.name}`);
   store.dispatch("auth/initAuthentication").then(user => {
     if (to.matched.some(route => route.meta.requiresAuth)) {
-      // protected route
       if (user) {
         next();
       } else {
         next({ name: "SignIn", query: { redirectTo: to.path } });
       }
     } else if (to.matched.some(route => route.meta.requiresGuest)) {
-      // protected route
       if (!user) {
         next();
       } else {
