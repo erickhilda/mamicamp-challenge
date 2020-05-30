@@ -82,13 +82,27 @@
         <div class="form-group">
           <label for="avatar">Avatar</label>
           <input
-            v-model="form.avatar"
+            v-model.lazy="form.avatar"
             @blur="$v.form.avatar.$touch()"
             id="avatar"
             type="text"
             class="form-input"
           />
-          <template v-if="$v.form.avatar.$error"> </template>
+          <template v-if="$v.form.avatar.$error">
+            <span v-if="!$v.form.avatar.url" class="form-error">
+              The supplied URL is invalid
+            </span>
+            <span
+              v-else-if="!$v.form.avatar.supportedImageFile"
+              class="form-error"
+            >
+              This file type is not supported by our system. Supported file
+              types: .jpg, .png, .gif, .jpeg, .svg
+            </span>
+            <span v-else-if="!$v.form.avatar.responseOk" class="form-error">
+              The supplied image cannot be found
+            </span>
+          </template>
         </div>
 
         <div class="form-actions">
@@ -110,6 +124,7 @@ import {
   required,
   email,
   minLength,
+  url,
   helpers as vuelidateHelpers
 } from "vuelidate/lib/validators";
 
@@ -167,7 +182,27 @@ export default {
         required,
         minLength: minLength(6)
       },
-      avatar: {}
+      avatar: {
+        url,
+        supportedImageFile(value) {
+          if (!vuelidateHelpers.req(value)) {
+            return true;
+          }
+          const supported = ["jpg", "jpeg", "gif", "png", "svg"];
+          const suffix = value.split(".").pop();
+          return supported.includes(suffix);
+        },
+        responseOk(value) {
+          if (!vuelidateHelpers.req(value)) {
+            return true;
+          }
+          return new Promise(resolve => {
+            fetch(value)
+              .then(response => resolve(response.ok))
+              .catch(() => resolve(false));
+          });
+        }
+      }
     }
   },
   methods: {
